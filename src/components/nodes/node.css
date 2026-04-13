@@ -1,0 +1,55 @@
+.custom-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  min-width: 120px;
+  text-align: center;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.custom-node:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.custom-node.selected {
+  border-color: #4f86f7;
+}
+
+.node-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.node-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.node-description {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Colour themes per node type */
+.client-node {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.service-node {
+  background-color: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+.database-node {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}

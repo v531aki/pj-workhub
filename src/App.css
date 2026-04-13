@@ -1,0 +1,24 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  background-color: #1a1a2e;
+  color: #ffffff;
+  padding: 12px 24px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.app-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.app-main {
+  flex: 1;
+  overflow: hidden;
+}
