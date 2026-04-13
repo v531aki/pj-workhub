@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Architecture Diagram</h1>
+        <h1>仕事一元管理アプリ — アーキテクチャ図</h1>
       </header>
       <main className="app-main">
         <ArchitectureDiagram />
