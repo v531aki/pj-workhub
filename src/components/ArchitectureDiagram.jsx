@@ -16,116 +16,130 @@ import './ArchitectureDiagram.css'
 
 const nodeTypes = { workHub: WorkHubNode }
 
-// ─────────────────────────────────────────────
-//  Layout (x, y)
+// ─────────────────────────────────────────────────────────────
+//  3つの管理領域
 //
-//           [local-ui]            y=40
-//          [github-org]           y=250
-//   [mgmt-hub] [project-repos]    y=460
-//  [cli-tools] [mcp-server]       y=670
-//           [claude]              y=890
+//  ① ローカル管理  (橙)  ~/.pj-workhub/
+//      管理対象リポジトリを指定・認証情報を保持
 //
-//  Backwards edge: cli-tools --left--> github-org
-//  goes around the left side of the canvas.
-// ─────────────────────────────────────────────
+//  ② 全社管理リポジトリ  (青)  mgmt-hub
+//      メンバー / マニュアル / ナレッジ / 全社ラベル
+//      CLI Tools・MCP Server を収容
+//
+//  ③ 案件リポジトリ  (緑・破線)  project-*
+//      各案件で独立して `pj init` 可能
+//      mgmt-hub から管理対象として指定して横断管理できる
+//
+//  Layout (x, y):
+//
+//   [local-config]    [local-ui]                       y=40/250
+//                    [github-org]                      y=250
+//   [mgmt-hub]                      [project-sf-a]    y=460/370
+//   [cli-tools]  [mcp-server]       [project-sf-b]    y=680/560
+//                                   [project-newapp]  y=750
+//                [claude]                              y=920
+// ─────────────────────────────────────────────────────────────
 
 const initialNodes = [
+  // ── ① ローカル管理 ──────────────────────────────────────────
+  {
+    id: 'local-config',
+    type: 'workHub',
+    position: { x: -140, y: 250 },
+    data: {
+      variant: 'local',
+      icon: '⚙️',
+      label: 'ローカル設定',
+      subtitle: '~/.pj-workhub/  （Git管理外）',
+      items: [
+        '管理対象リポジトリ一覧を定義',
+        'GitHub 認証情報',
+        '個人・環境設定',
+      ],
+    },
+  },
   {
     id: 'local-ui',
     type: 'workHub',
-    position: { x: 370, y: 40 },
+    position: { x: 330, y: 40 },
     data: {
       variant: 'ui',
       icon: '💻',
       label: 'Local UI',
       subtitle: 'React + Vite  /  localhost:3000',
       items: [
-        'ダッシュボード（今日のタスク一覧）',
-        'プロジェクト管理・工数予実',
-        'チーム / メンバープロファイル',
-        'ナレッジ・マニュアル管理',
+        'ダッシュボード（複数PJ横断タスク一覧）',
+        '管理対象リポジトリを切り替え表示',
+        '工数予実・スプリント管理',
+        'ナレッジ・マニュアル参照',
       ],
     },
   },
+
+  // ── ② 全社管理 ──────────────────────────────────────────────
   {
     id: 'github-org',
     type: 'workHub',
-    position: { x: 290, y: 255 },
+    position: { x: 300, y: 250 },
     data: {
       variant: 'github',
       icon: '🐙',
       label: 'GitHub Private Org',
-      subtitle: 'データの中枢',
+      subtitle: '全リポジトリの親',
       items: [
+        'mgmt-hub  （全社管理リポジトリ）',
+        'project-*  （案件リポジトリ群）',
         'Issues & Projects v2',
-        'Markdown（議事録 / マニュアル）',
-        'JSON マスターデータ',
       ],
     },
   },
   {
     id: 'mgmt-hub',
     type: 'workHub',
-    position: { x: 60, y: 465 },
+    position: { x: 60, y: 460 },
     data: {
       variant: 'repo-main',
-      icon: '📦',
+      icon: '🏢',
       label: 'mgmt-hub',
-      subtitle: '中枢リポジトリ  ★',
+      subtitle: '全社管理リポジトリ  ★',
       items: [
-        '/app  （ローカルUI）',
-        '/cli  （CLIツール群）',
-        '/mcp  （MCP Server）',
-        '/members  /manuals  /knowledge',
-      ],
-    },
-  },
-  {
-    id: 'project-repos',
-    type: 'workHub',
-    position: { x: 540, y: 465 },
-    data: {
-      variant: 'repo',
-      icon: '📦',
-      label: 'project-* リポジトリ群',
-      subtitle: '各プロジェクト',
-      items: [
-        'project-sf-a  （Salesforce導入 A社）',
-        'project-sf-b  （Salesforce導入 B社）',
-        'project-newapp  （新規アプリ）',
-        'project-internal  （社内基盤）',
+        '/members  （メンバー・組織情報）',
+        '/manuals  （マニュアル・ルール）',
+        '/knowledge  （ナレッジベース）',
+        '/labels  （全社共通ラベル定義）',
+        '/cli  /mcp  （ツール群）',
       ],
     },
   },
   {
     id: 'cli-tools',
     type: 'workHub',
-    position: { x: 60, y: 680 },
+    position: { x: 60, y: 690 },
     data: {
       variant: 'cli',
       icon: '⌨️',
       label: 'CLI Tools',
       subtitle: 'Node.js  （mgmt-hub /cli）',
       items: [
-        '朝会サポート（今日のタスク取得 + AI要約）',
+        'pj init  （案件リポジトリを初期化）',
+        'pj use <repo>  （管理対象を指定）',
+        '朝会サポート・工数入力',
         '議事録 → Issue 自動生成',
-        '工数入力',
-        'ラベル一括作成',
       ],
     },
   },
   {
     id: 'mcp-server',
     type: 'workHub',
-    position: { x: 540, y: 680 },
+    position: { x: 390, y: 690 },
     data: {
       variant: 'mcp',
       icon: '🔌',
       label: 'MCP Server',
       subtitle: 'mgmt-hub /mcp',
       items: [
-        'GitHub Issue 操作',
-        'Projects v2 操作',
+        '指定PJの Issue / Projects v2 操作',
+        '複数リポジトリを横断してクエリ',
         'Claude への自然言語インターフェース',
       ],
     },
@@ -133,7 +147,7 @@ const initialNodes = [
   {
     id: 'claude',
     type: 'workHub',
-    position: { x: 330, y: 905 },
+    position: { x: 300, y: 930 },
     data: {
       variant: 'ai',
       icon: '🤖',
@@ -142,7 +156,57 @@ const initialNodes = [
       items: [
         'Claude Code（ターミナル）',
         'claude.ai（ブラウザ）',
-        '自然言語でシステムを操作',
+        '自然言語で複数PJを横断管理',
+      ],
+    },
+  },
+
+  // ── ③ 案件リポジトリ（独立 init 可能） ─────────────────────
+  {
+    id: 'project-sf-a',
+    type: 'workHub',
+    position: { x: 660, y: 370 },
+    data: {
+      variant: 'repo-project',
+      icon: '📁',
+      label: 'project-sf-a',
+      subtitle: 'Salesforce導入 A社  ｜  pj init 済み',
+      items: [
+        '.pj-workhub/config.yml',
+        'ブランチ戦略・スプリント設定',
+        'Issues / Projects v2',
+      ],
+    },
+  },
+  {
+    id: 'project-sf-b',
+    type: 'workHub',
+    position: { x: 660, y: 560 },
+    data: {
+      variant: 'repo-project',
+      icon: '📁',
+      label: 'project-sf-b',
+      subtitle: 'Salesforce導入 B社  ｜  pj init 済み',
+      items: [
+        '.pj-workhub/config.yml',
+        'ブランチ戦略・スプリント設定',
+        'Issues / Projects v2',
+      ],
+    },
+  },
+  {
+    id: 'project-newapp',
+    type: 'workHub',
+    position: { x: 660, y: 750 },
+    data: {
+      variant: 'repo-project',
+      icon: '📁',
+      label: 'project-newapp',
+      subtitle: '新規アプリ開発  ｜  pj init 済み',
+      items: [
+        '.pj-workhub/config.yml',
+        'ブランチ戦略・スプリント設定',
+        'Issues / Projects v2',
       ],
     },
   },
@@ -151,7 +215,22 @@ const initialNodes = [
 const ls = { fontSize: 10, fill: 'rgba(210,210,220,0.9)' }
 
 const initialEdges = [
-  // Local UI ↔ GitHub Org  (main data channel)
+  // ローカル設定 → Local UI（管理対象を設定）
+  {
+    id: 'localcfg-ui',
+    source: 'local-config',
+    sourceHandle: 'right-src',
+    target: 'local-ui',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '管理対象リポジトリを設定',
+    style: { stroke: '#f0883e', strokeDasharray: '5 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(60,35,0,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+
+  // Local UI → GitHub Org（APIアクセス）
   {
     id: 'ui-github',
     source: 'local-ui',
@@ -166,7 +245,8 @@ const initialEdges = [
     labelBgStyle: { fill: 'rgba(22,42,90,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
   },
-  // GitHub Org → mgmt-hub
+
+  // GitHub Org → mgmt-hub（全社管理リポジトリを収容）
   {
     id: 'github-mgmt',
     source: 'github-org',
@@ -180,12 +260,13 @@ const initialEdges = [
     labelBgStyle: { fill: 'rgba(13,31,62,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
   },
-  // GitHub Org → project-repos
+
+  // GitHub Org → 各案件リポジトリ（収容）
   {
-    id: 'github-projects',
+    id: 'github-pja',
     source: 'github-org',
-    sourceHandle: 'bottom',
-    target: 'project-repos',
+    sourceHandle: 'right-src',
+    target: 'project-sf-a',
     targetHandle: 'top',
     type: 'smoothstep',
     label: 'contains',
@@ -194,7 +275,34 @@ const initialEdges = [
     labelBgStyle: { fill: 'rgba(13,40,24,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
   },
-  // mgmt-hub → cli-tools  (hosts)
+  {
+    id: 'github-pjb',
+    source: 'github-org',
+    sourceHandle: 'right-src',
+    target: 'project-sf-b',
+    targetHandle: 'top',
+    type: 'smoothstep',
+    label: 'contains',
+    style: { stroke: '#3fb950' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(13,40,24,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+  {
+    id: 'github-pjnew',
+    source: 'github-org',
+    sourceHandle: 'right-src',
+    target: 'project-newapp',
+    targetHandle: 'top',
+    type: 'smoothstep',
+    label: 'contains',
+    style: { stroke: '#3fb950' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(13,40,24,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+
+  // mgmt-hub → CLI Tools（/cli を収容）
   {
     id: 'mgmt-cli',
     source: 'mgmt-hub',
@@ -208,8 +316,49 @@ const initialEdges = [
     labelBgStyle: { fill: 'rgba(13,31,62,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
   },
-  // CLI Tools → GitHub Org  (Issue CRUD / 朝会 / 議事録変換)
-  // Routes around the left side of the diagram
+
+  // mgmt-hub → 各案件リポジトリ（管理対象として指定）
+  {
+    id: 'mgmt-pja',
+    source: 'mgmt-hub',
+    sourceHandle: 'right-src',
+    target: 'project-sf-a',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '管理',
+    style: { stroke: '#c49ffd', strokeDasharray: '6 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(40,20,70,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+  {
+    id: 'mgmt-pjb',
+    source: 'mgmt-hub',
+    sourceHandle: 'right-src',
+    target: 'project-sf-b',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '管理',
+    style: { stroke: '#c49ffd', strokeDasharray: '6 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(40,20,70,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+  {
+    id: 'mgmt-pjnew',
+    source: 'mgmt-hub',
+    sourceHandle: 'right-src',
+    target: 'project-newapp',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '管理',
+    style: { stroke: '#c49ffd', strokeDasharray: '6 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(40,20,70,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+
+  // CLI Tools → GitHub Org（Issue CRUD / 朝会 / 議事録変換）
   {
     id: 'cli-github',
     source: 'cli-tools',
@@ -224,7 +373,8 @@ const initialEdges = [
     labelBgStyle: { fill: 'rgba(45,32,0,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
   },
-  // CLI Tools → MCP Server  (runs)
+
+  // CLI Tools → MCP Server（起動）
   {
     id: 'cli-mcp',
     source: 'cli-tools',
@@ -238,7 +388,8 @@ const initialEdges = [
     labelBgStyle: { fill: 'rgba(45,32,0,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
   },
-  // MCP Server → Claude  (MCP Protocol)
+
+  // MCP Server → Claude（MCP Protocol）
   {
     id: 'mcp-claude',
     source: 'mcp-server',
@@ -256,13 +407,16 @@ const initialEdges = [
 ]
 
 const miniMapColor = {
-  'local-ui':       '#5b9cf6',
-  'github-org':     '#484f58',
-  'mgmt-hub':       '#58a6ff',
-  'project-repos':  '#3fb950',
-  'cli-tools':      '#e3b341',
-  'mcp-server':     '#39d0d8',
-  'claude':         '#c49ffd',
+  'local-config':    '#f0883e',
+  'local-ui':        '#5b9cf6',
+  'github-org':      '#484f58',
+  'mgmt-hub':        '#58a6ff',
+  'cli-tools':       '#e3b341',
+  'mcp-server':      '#39d0d8',
+  'claude':          '#c49ffd',
+  'project-sf-a':    '#3fb950',
+  'project-sf-b':    '#3fb950',
+  'project-newapp':  '#3fb950',
 }
 
 export default function ArchitectureDiagram() {
