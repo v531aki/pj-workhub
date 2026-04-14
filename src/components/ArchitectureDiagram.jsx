@@ -115,6 +115,7 @@ const entityNodes = [
       subtitle: 'ブラウザ  /  localhost:3000',
       items: [
         'ダッシュボード(横断タスク一覧)',
+        '独自ガントチャート(SVG / 書き戻し可)',
         'PJ 別ビュー / 工数予実',
         'マニュアル・ナレッジ参照',
       ],
@@ -200,6 +201,7 @@ const entityNodes = [
       items: [
         '管理対象リポジトリ一覧',
         'GitHub 認証情報',
+        'calendar.yml (営業日 / 稼働率)',
         '個人・環境設定',
       ],
     },
@@ -217,6 +219,7 @@ const entityNodes = [
         'Claude の自然言語 → GitHub 操作',
         '複数 PJ 横断クエリ',
         'Issue / Projects v2 の CRUD',
+        'ガント操作 (updateSchedule / detectDelays)',
       ],
     },
   },
@@ -231,6 +234,7 @@ const entityNodes = [
       subtitle: 'Node.js  /  mgmt-hub 由来',
       items: [
         'pj init / pj use (PJ登録)',
+        'pj projects-v2 apply (スキーマ一括適用)',
         '朝会サポート・工数入力',
         '議事録 → Issue 自動生成',
       ],
@@ -250,6 +254,7 @@ const entityNodes = [
       items: [
         '/members  /manuals  /knowledge',
         '/labels  (全社共通ラベル定義)',
+        '/projects-v2  (ガント用フィールド定義)',
         '/cli  /mcp  (ツールのソース)',
       ],
     },
@@ -263,7 +268,11 @@ const entityNodes = [
       icon: '📁',
       label: 'project-sf-a',
       subtitle: 'Salesforce 導入 A社',
-      items: ['Issues / Projects v2', 'コード + タスク 同居'],
+      items: [
+        'Issues (depends_on / blocks in body)',
+        'Projects v2: Start/End/Progress',
+        'コード + タスク 同居',
+      ],
     },
   },
   {
@@ -275,7 +284,11 @@ const entityNodes = [
       icon: '📁',
       label: 'project-sf-b',
       subtitle: 'Salesforce 導入 B社',
-      items: ['Issues / Projects v2', 'コード + タスク 同居'],
+      items: [
+        'Issues (depends_on / blocks in body)',
+        'Projects v2: Start/End/Progress',
+        'コード + タスク 同居',
+      ],
     },
   },
   {
@@ -287,7 +300,11 @@ const entityNodes = [
       icon: '📁',
       label: 'project-newapp',
       subtitle: '新規アプリ開発',
-      items: ['Issues / Projects v2', 'コード + タスク 同居'],
+      items: [
+        'Issues (depends_on / blocks in body)',
+        'Projects v2: Start/End/Progress',
+        'コード + タスク 同居',
+      ],
     },
   },
 ]
