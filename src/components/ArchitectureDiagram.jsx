@@ -32,12 +32,12 @@ const nodeTypes = { workHub: WorkHubNode }
 //
 //  Layout (x, y):
 //
-//   [local-config]    [local-ui]                       y=40/250
-//                    [github-org]                      y=250
-//   [mgmt-hub]                      [project-sf-a]    y=460/370
-//   [cli-tools]  [mcp-server]       [project-sf-b]    y=680/560
-//                                   [project-newapp]  y=750
-//                [claude]                              y=920
+//   [local-config]    [local-ui]                                    y=40/250
+//                    [github-org]                                   y=250
+//   [mgmt-hub]                      [project-sf-a]                 y=460/370
+//   [cli-tools]  [mcp-server]       [project-sf-b]  [repo-config]  y=680/560/490
+//                                   [project-newapp]               y=750
+//                [claude]                                           y=920
 // ─────────────────────────────────────────────────────────────
 
 const initialNodes = [
@@ -50,10 +50,10 @@ const initialNodes = [
       variant: 'local',
       icon: '⚙️',
       label: 'ローカル設定',
-      subtitle: '~/.pj-workhub/  （Git管理外）',
+      subtitle: '~/.pj-workhub/  （マシンローカル / Git管理外）',
       items: [
         '管理対象リポジトリ一覧を定義',
-        'GitHub 認証情報',
+        'GitHub 認証情報（PAT等）',
         '個人・環境設定',
       ],
     },
@@ -172,9 +172,9 @@ const initialNodes = [
       label: 'project-sf-a',
       subtitle: 'Salesforce導入 A社  ｜  pj init 済み',
       items: [
-        '.pj-workhub/config.yml',
-        'ブランチ戦略・スプリント設定',
         'Issues / Projects v2',
+        'SFDXソース / コード',
+        'ブランチ・PR管理',
       ],
     },
   },
@@ -188,9 +188,9 @@ const initialNodes = [
       label: 'project-sf-b',
       subtitle: 'Salesforce導入 B社  ｜  pj init 済み',
       items: [
-        '.pj-workhub/config.yml',
-        'ブランチ戦略・スプリント設定',
         'Issues / Projects v2',
+        'SFDXソース / コード',
+        'ブランチ・PR管理',
       ],
     },
   },
@@ -204,9 +204,27 @@ const initialNodes = [
       label: 'project-newapp',
       subtitle: '新規アプリ開発  ｜  pj init 済み',
       items: [
-        '.pj-workhub/config.yml',
-        'ブランチ戦略・スプリント設定',
         'Issues / Projects v2',
+        'アプリコード',
+        'ブランチ・PR管理',
+      ],
+    },
+  },
+
+  // ── リポジトリ設定（案件リポジトリにコミットされる設定） ──────
+  {
+    id: 'repo-config',
+    type: 'workHub',
+    position: { x: 960, y: 490 },
+    data: {
+      variant: 'repo-cfg',
+      icon: '📋',
+      label: 'リポジトリ設定',
+      subtitle: '.pj-workhub/config.yml  （Git管理・チーム共有）',
+      items: [
+        'ブランチ戦略・スプリント設定',
+        'Issueラベル・マイルストーン定義',
+        'プロジェクト固有ルール',
       ],
     },
   },
@@ -389,6 +407,47 @@ const initialEdges = [
     labelBgPadding: [5, 3],
   },
 
+  // 案件リポジトリ → リポジトリ設定（config.yml を保持）
+  {
+    id: 'pja-repocfg',
+    source: 'project-sf-a',
+    sourceHandle: 'right-src',
+    target: 'repo-config',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '設定を保持',
+    style: { stroke: '#56d364', strokeDasharray: '5 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(10,34,21,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+  {
+    id: 'pjb-repocfg',
+    source: 'project-sf-b',
+    sourceHandle: 'right-src',
+    target: 'repo-config',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '設定を保持',
+    style: { stroke: '#56d364', strokeDasharray: '5 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(10,34,21,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+  {
+    id: 'pjnew-repocfg',
+    source: 'project-newapp',
+    sourceHandle: 'right-src',
+    target: 'repo-config',
+    targetHandle: 'left-tgt',
+    type: 'smoothstep',
+    label: '設定を保持',
+    style: { stroke: '#56d364', strokeDasharray: '5 3' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(10,34,21,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+
   // MCP Server → Claude（MCP Protocol）
   {
     id: 'mcp-claude',
@@ -417,6 +476,7 @@ const miniMapColor = {
   'project-sf-a':    '#3fb950',
   'project-sf-b':    '#3fb950',
   'project-newapp':  '#3fb950',
+  'repo-config':     '#56d364',
 }
 
 export default function ArchitectureDiagram() {

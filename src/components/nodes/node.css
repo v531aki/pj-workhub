@@ -120,6 +120,11 @@
   border-style: dashed;
 }
 
+.wh-node--repo-cfg {
+  background: linear-gradient(145deg, #0a2215, #14382a);
+  border-color: #56d364;
+}
+
 /* ===== Legacy node styles (kept for reference) ===== */
 .custom-node {
   display: flex;
