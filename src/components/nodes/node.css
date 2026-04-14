@@ -1,3 +1,115 @@
+/* ===== WorkHub Node Styles ===== */
+.wh-node {
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  padding: 12px 14px;
+  min-width: 190px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  transition: box-shadow 0.2s;
+  cursor: default;
+}
+
+.wh-node:hover {
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55);
+}
+
+.wh-node__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wh-node__icon {
+  font-size: 1.7rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.wh-node__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wh-node__label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.wh-node__subtitle {
+  font-size: 0.67rem;
+  color: rgba(255, 255, 255, 0.58);
+  line-height: 1.2;
+}
+
+.wh-node__items {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wh-node__item {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.78);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.3;
+}
+
+.wh-node__item::before {
+  content: '▸';
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.38);
+  flex-shrink: 0;
+}
+
+/* --- Variant colors --- */
+.wh-node--ui {
+  background: linear-gradient(145deg, #1e3a6e, #2d58a0);
+  border-color: #5b9cf6;
+}
+
+.wh-node--github {
+  background: linear-gradient(145deg, #161b22, #21262d);
+  border-color: #484f58;
+}
+
+.wh-node--repo-main {
+  background: linear-gradient(145deg, #0d1f3e, #1a3a6e);
+  border-color: #58a6ff;
+}
+
+.wh-node--repo {
+  background: linear-gradient(145deg, #0d2818, #1a4530);
+  border-color: #3fb950;
+}
+
+.wh-node--cli {
+  background: linear-gradient(145deg, #2d2000, #4a3500);
+  border-color: #e3b341;
+}
+
+.wh-node--mcp {
+  background: linear-gradient(145deg, #0a2d30, #174f54);
+  border-color: #39d0d8;
+}
+
+.wh-node--ai {
+  background: linear-gradient(145deg, #2d1b69, #4a2d8f);
+  border-color: #c49ffd;
+}
+
+/* ===== Legacy node styles (kept for reference) ===== */
 .custom-node {
   display: flex;
   flex-direction: column;
