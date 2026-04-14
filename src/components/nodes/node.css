@@ -120,6 +120,112 @@
   border-style: dashed;
 }
 
+/* ===== Layer Node (背景の帯) ===== */
+.layer-node {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 14px 20px;
+  box-sizing: border-box;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.layer-node__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.layer-node__icon {
+  font-size: 1.05rem;
+}
+
+.layer-node__desc {
+  margin-top: 6px;
+  margin-left: 4px;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.layer-node--human {
+  border-color: rgba(240, 136, 62, 0.45);
+  background: rgba(240, 136, 62, 0.06);
+}
+.layer-node--ai {
+  border-color: rgba(196, 159, 253, 0.45);
+  background: rgba(196, 159, 253, 0.06);
+}
+.layer-node--tools {
+  border-color: rgba(227, 179, 65, 0.45);
+  background: rgba(227, 179, 65, 0.05);
+}
+.layer-node--data {
+  border-color: rgba(88, 166, 255, 0.45);
+  background: rgba(88, 166, 255, 0.05);
+}
+
+/* ===== Actor Node (人間アクター) ===== */
+.actor-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 110px;
+  color: #fff;
+  user-select: none;
+}
+
+.actor-node__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  background: linear-gradient(145deg, #3a2200, #6a4000);
+  border: 2px solid #f0883e;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5);
+}
+
+.actor-node__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.actor-node__subtitle {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===== Screen variant (Layer 1) ===== */
+.wh-node--screen {
+  background: linear-gradient(145deg, #1a2d4f, #2d4a80);
+  border-color: #7fb4ff;
+}
+
+/* ===== Runtime variant (Layer 2) ===== */
+.wh-node--runtime-local {
+  background: linear-gradient(145deg, #2d1b3e, #472a68);
+  border-color: #c49ffd;
+}
+.wh-node--runtime-cloud {
+  background: linear-gradient(145deg, #1a1040, #2f1f6e);
+  border-color: #9a7ff5;
+  border-style: dashed;
+}
+
 /* ===== Legacy node styles (kept for reference) ===== */
 .custom-node {
   display: flex;
