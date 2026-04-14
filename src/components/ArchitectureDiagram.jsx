@@ -12,40 +12,94 @@ import {
 import '@xyflow/react/dist/style.css'
 
 import WorkHubNode from './nodes/WorkHubNode'
+import ZoneNode    from './nodes/ZoneNode'
 import './ArchitectureDiagram.css'
 
-const nodeTypes = { workHub: WorkHubNode }
+const nodeTypes = { workHub: WorkHubNode, zone: ZoneNode }
 
-// ─────────────────────────────────────────────────────────────
-//  3つの管理領域
+// ─────────────────────────────────────────────────────────────────────────────
+//  3列ゾーン構成
 //
-//  ① ローカル管理  (橙)  ~/.pj-workhub/
-//      管理対象リポジトリを指定・認証情報を保持
+//  ┌─────────────────────┐  ┌──────────────────────────────┐  ┌─────────────┐
+//  │  ① ローカル管理      │  │  ② 全社管理リポジトリ         │  │  ③ 案件     │
+//  │  ~/.pj-workhub/     │  │  mgmt-hub (GitHub)           │  │  リポジトリ  │
+//  │                     │  │                              │  │  pj init    │
+//  │  [local-ui]         │  │  [github-org]                │  │  [sf-a]     │
+//  │  [local-config]     │  │  [mgmt-hub]                  │  │  [sf-b]     │
+//  │                     │  │  [cli-tools] [mcp-server]    │  │  [newapp]   │
+//  │                     │  │  [claude]                    │  │             │
+//  └─────────────────────┘  └──────────────────────────────┘  └─────────────┘
 //
-//  ② 全社管理リポジトリ  (青)  mgmt-hub
-//      メンバー / マニュアル / ナレッジ / 全社ラベル
-//      CLI Tools・MCP Server を収容
-//
-//  ③ 案件リポジトリ  (緑・破線)  project-*
-//      各案件で独立して `pj init` 可能
-//      mgmt-hub から管理対象として指定して横断管理できる
-//
-//  Layout (x, y):
-//
-//   [local-config]    [local-ui]                       y=40/250
-//                    [github-org]                      y=250
-//   [mgmt-hub]                      [project-sf-a]    y=460/370
-//   [cli-tools]  [mcp-server]       [project-sf-b]    y=680/560
-//                                   [project-newapp]  y=750
-//                [claude]                              y=920
-// ─────────────────────────────────────────────────────────────
+//  x zones:  local=-185..195  |  company=210..710  |  projects=720..1000
+// ─────────────────────────────────────────────────────────────────────────────
 
 const initialNodes = [
-  // ── ① ローカル管理 ──────────────────────────────────────────
+  // ── ゾーン背景（zIndex: 0、コンテンツノードは zIndex: 1） ─────────────────
+  {
+    id: 'zone-local',
+    type: 'zone',
+    position: { x: -185, y: 10 },
+    zIndex: 0,
+    selectable: false,
+    draggable: false,
+    style: { width: 380, height: 460 },
+    data: { variant: 'local', icon: '🖥️', label: 'ローカル管理  （Git管理外）' },
+  },
+  {
+    id: 'zone-company',
+    type: 'zone',
+    position: { x: 210, y: 10 },
+    zIndex: 0,
+    selectable: false,
+    draggable: false,
+    style: { width: 505, height: 945 },
+    data: {
+      variant: 'company',
+      icon: '🏢',
+      label: '全社管理リポジトリ  （GitHub Org）',
+      note: 'mgmt-hub に全社共通リソースを集約',
+    },
+  },
+  {
+    id: 'zone-projects',
+    type: 'zone',
+    position: { x: 725, y: 10 },
+    zIndex: 0,
+    selectable: false,
+    draggable: false,
+    style: { width: 278, height: 640 },
+    data: {
+      variant: 'projects',
+      icon: '📁',
+      label: '案件リポジトリ群',
+      note: 'pj init で独立初期化',
+    },
+  },
+
+  // ── ① ローカル管理ゾーン ──────────────────────────────────────────────────
+  {
+    id: 'local-ui',
+    type: 'workHub',
+    position: { x: -110, y: 55 },
+    zIndex: 1,
+    data: {
+      variant: 'ui',
+      icon: '💻',
+      label: 'Local UI',
+      subtitle: 'React + Vite  /  localhost:3000',
+      items: [
+        'ダッシュボード（複数PJ横断タスク）',
+        '管理対象リポジトリを切り替え表示',
+        '工数予実・スプリント管理',
+        'ナレッジ・マニュアル参照',
+      ],
+    },
+  },
   {
     id: 'local-config',
     type: 'workHub',
-    position: { x: -140, y: 250 },
+    position: { x: -110, y: 280 },
+    zIndex: 1,
     data: {
       variant: 'local',
       icon: '⚙️',
@@ -58,29 +112,13 @@ const initialNodes = [
       ],
     },
   },
-  {
-    id: 'local-ui',
-    type: 'workHub',
-    position: { x: 330, y: 40 },
-    data: {
-      variant: 'ui',
-      icon: '💻',
-      label: 'Local UI',
-      subtitle: 'React + Vite  /  localhost:3000',
-      items: [
-        'ダッシュボード（複数PJ横断タスク一覧）',
-        '管理対象リポジトリを切り替え表示',
-        '工数予実・スプリント管理',
-        'ナレッジ・マニュアル参照',
-      ],
-    },
-  },
 
-  // ── ② 全社管理 ──────────────────────────────────────────────
+  // ── ② 全社管理リポジトリゾーン ───────────────────────────────────────────
   {
     id: 'github-org',
     type: 'workHub',
-    position: { x: 300, y: 250 },
+    position: { x: 260, y: 55 },
+    zIndex: 1,
     data: {
       variant: 'github',
       icon: '🐙',
@@ -96,7 +134,8 @@ const initialNodes = [
   {
     id: 'mgmt-hub',
     type: 'workHub',
-    position: { x: 60, y: 460 },
+    position: { x: 260, y: 275 },
+    zIndex: 1,
     data: {
       variant: 'repo-main',
       icon: '🏢',
@@ -107,6 +146,7 @@ const initialNodes = [
         '/manuals  （マニュアル・ルール）',
         '/knowledge  （ナレッジベース）',
         '/labels  （全社共通ラベル定義）',
+        '全案件ロードマップの横断参照',
         '/cli  /mcp  （ツール群）',
       ],
     },
@@ -114,7 +154,8 @@ const initialNodes = [
   {
     id: 'cli-tools',
     type: 'workHub',
-    position: { x: 60, y: 690 },
+    position: { x: 260, y: 520 },
+    zIndex: 1,
     data: {
       variant: 'cli',
       icon: '⌨️',
@@ -131,7 +172,8 @@ const initialNodes = [
   {
     id: 'mcp-server',
     type: 'workHub',
-    position: { x: 390, y: 690 },
+    position: { x: 465, y: 520 },
+    zIndex: 1,
     data: {
       variant: 'mcp',
       icon: '🔌',
@@ -147,7 +189,8 @@ const initialNodes = [
   {
     id: 'claude',
     type: 'workHub',
-    position: { x: 300, y: 930 },
+    position: { x: 360, y: 760 },
+    zIndex: 1,
     data: {
       variant: 'ai',
       icon: '🤖',
@@ -161,52 +204,58 @@ const initialNodes = [
     },
   },
 
-  // ── ③ 案件リポジトリ（独立 init 可能） ─────────────────────
+  // ── ③ 案件リポジトリゾーン（pj init で独立初期化） ─────────────────────
   {
     id: 'project-sf-a',
     type: 'workHub',
-    position: { x: 660, y: 370 },
+    position: { x: 748, y: 55 },
+    zIndex: 1,
     data: {
       variant: 'repo-project',
       icon: '📁',
       label: 'project-sf-a',
-      subtitle: 'Salesforce導入 A社  ｜  pj init 済み',
+      subtitle: 'Salesforce導入 A社',
       items: [
-        '.pj-workhub/config.yml',
-        'ブランチ戦略・スプリント設定',
-        'Issues / Projects v2',
+        '.pj-workhub/config.yml  （pj init）',
+        'Projects v2 ロードマップ（ガント）',
+        'マイルストーン / スプリント',
+        'Issues（タスク・バグ・依頼）',
       ],
     },
   },
   {
     id: 'project-sf-b',
     type: 'workHub',
-    position: { x: 660, y: 560 },
+    position: { x: 748, y: 260 },
+    zIndex: 1,
     data: {
       variant: 'repo-project',
       icon: '📁',
       label: 'project-sf-b',
-      subtitle: 'Salesforce導入 B社  ｜  pj init 済み',
+      subtitle: 'Salesforce導入 B社',
       items: [
-        '.pj-workhub/config.yml',
-        'ブランチ戦略・スプリント設定',
-        'Issues / Projects v2',
+        '.pj-workhub/config.yml  （pj init）',
+        'Projects v2 ロードマップ（ガント）',
+        'マイルストーン / スプリント',
+        'Issues（タスク・バグ・依頼）',
       ],
     },
   },
   {
     id: 'project-newapp',
     type: 'workHub',
-    position: { x: 660, y: 750 },
+    position: { x: 748, y: 465 },
+    zIndex: 1,
     data: {
       variant: 'repo-project',
       icon: '📁',
       label: 'project-newapp',
-      subtitle: '新規アプリ開発  ｜  pj init 済み',
+      subtitle: '新規アプリ開発',
       items: [
-        '.pj-workhub/config.yml',
-        'ブランチ戦略・スプリント設定',
-        'Issues / Projects v2',
+        '.pj-workhub/config.yml  （pj init）',
+        'Projects v2 ロードマップ（ガント）',
+        'マイルストーン / スプリント',
+        'Issues（タスク・バグ・依頼）',
       ],
     },
   },
@@ -215,13 +264,13 @@ const initialNodes = [
 const ls = { fontSize: 10, fill: 'rgba(210,210,220,0.9)' }
 
 const initialEdges = [
-  // ローカル設定 → Local UI（管理対象を設定）
+  // ローカル設定 → Local UI（管理対象リポジトリを設定して UI に反映）
   {
     id: 'localcfg-ui',
     source: 'local-config',
-    sourceHandle: 'right-src',
+    sourceHandle: 'top-src',
     target: 'local-ui',
-    targetHandle: 'left-tgt',
+    targetHandle: 'bottom-tgt',
     type: 'smoothstep',
     label: '管理対象リポジトリを設定',
     style: { stroke: '#f0883e', strokeDasharray: '5 3' },
@@ -230,13 +279,13 @@ const initialEdges = [
     labelBgPadding: [5, 3],
   },
 
-  // Local UI → GitHub Org（APIアクセス）
+  // Local UI → GitHub Org（APIアクセス、zone-local → zone-company）
   {
     id: 'ui-github',
     source: 'local-ui',
-    sourceHandle: 'bottom',
+    sourceHandle: 'right-src',
     target: 'github-org',
-    targetHandle: 'top',
+    targetHandle: 'left-tgt',
     type: 'smoothstep',
     animated: true,
     label: 'GitHub REST API / GraphQL',
@@ -261,13 +310,13 @@ const initialEdges = [
     labelBgPadding: [5, 3],
   },
 
-  // GitHub Org → 各案件リポジトリ（収容）
+  // GitHub Org → 各案件リポジトリ（収容、zone-company → zone-projects）
   {
     id: 'github-pja',
     source: 'github-org',
     sourceHandle: 'right-src',
     target: 'project-sf-a',
-    targetHandle: 'top',
+    targetHandle: 'left-tgt',
     type: 'smoothstep',
     label: 'contains',
     style: { stroke: '#3fb950' },
@@ -280,7 +329,7 @@ const initialEdges = [
     source: 'github-org',
     sourceHandle: 'right-src',
     target: 'project-sf-b',
-    targetHandle: 'top',
+    targetHandle: 'left-tgt',
     type: 'smoothstep',
     label: 'contains',
     style: { stroke: '#3fb950' },
@@ -293,7 +342,7 @@ const initialEdges = [
     source: 'github-org',
     sourceHandle: 'right-src',
     target: 'project-newapp',
-    targetHandle: 'top',
+    targetHandle: 'left-tgt',
     type: 'smoothstep',
     label: 'contains',
     style: { stroke: '#3fb950' },
@@ -317,7 +366,7 @@ const initialEdges = [
     labelBgPadding: [5, 3],
   },
 
-  // mgmt-hub → 各案件リポジトリ（管理対象として指定）
+  // mgmt-hub → 各案件リポジトリ（管理対象として指定、zone-company → zone-projects）
   {
     id: 'mgmt-pja',
     source: 'mgmt-hub',
@@ -358,7 +407,7 @@ const initialEdges = [
     labelBgPadding: [5, 3],
   },
 
-  // CLI Tools → GitHub Org（Issue CRUD / 朝会 / 議事録変換）
+  // CLI Tools → GitHub Org（Issue CRUD / 朝会 / 議事録変換）左回り
   {
     id: 'cli-github',
     source: 'cli-tools',
@@ -407,6 +456,9 @@ const initialEdges = [
 ]
 
 const miniMapColor = {
+  'zone-local':      'rgba(240,136,62,0.25)',
+  'zone-company':    'rgba(88,166,255,0.2)',
+  'zone-projects':   'rgba(63,185,80,0.2)',
   'local-config':    '#f0883e',
   'local-ui':        '#5b9cf6',
   'github-org':      '#484f58',
@@ -438,7 +490,7 @@ export default function ArchitectureDiagram() {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.15 }}
+        fitViewOptions={{ padding: 0.12 }}
       >
         <Controls />
         <MiniMap

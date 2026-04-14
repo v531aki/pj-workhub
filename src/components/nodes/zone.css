@@ -1,0 +1,58 @@
+/* ===== Zone Node (background grouping) ===== */
+.zone-node {
+  border-radius: 16px;
+  border: 1.5px dashed;
+  pointer-events: none;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.zone-node__header {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.zone-node__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.zone-node__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+.zone-node__note {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 0.6rem;
+  opacity: 0.55;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+/* --- Variants --- */
+.zone-node--local {
+  background: rgba(240, 136, 62, 0.05);
+  border-color: rgba(240, 136, 62, 0.38);
+  color: #f0883e;
+}
+
+.zone-node--company {
+  background: rgba(88, 166, 255, 0.04);
+  border-color: rgba(88, 166, 255, 0.32);
+  color: #58a6ff;
+}
+
+.zone-node--projects {
+  background: rgba(63, 185, 80, 0.04);
+  border-color: rgba(63, 185, 80, 0.32);
+  color: #3fb950;
+}
