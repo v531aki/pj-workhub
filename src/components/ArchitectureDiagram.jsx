@@ -121,8 +121,8 @@ const initialNodes = [
       label: 'CLI Tools',
       subtitle: 'Node.js  （mgmt-hub /cli）',
       items: [
-        'pj init  （案件リポジトリを初期化）',
-        'pj use <repo>  （管理対象を指定）',
+        'pj init  （各PJフォルダ内で実行）',
+        'pj use <repo>  （ローカル設定に登録）',
         '朝会サポート・工数入力',
         '議事録 → Issue 自動生成',
       ],
@@ -220,8 +220,9 @@ const initialNodes = [
       variant: 'repo-cfg',
       icon: '📋',
       label: 'リポジトリ設定',
-      subtitle: '.pj-workhub/config.yml  （Git管理・チーム共有）',
+      subtitle: '.pj-workhub/config.yml  （pj init で生成・Git管理）',
       items: [
+        'PJフォルダ内で pj init を実行して生成',
         'ブランチ戦略・スプリント設定',
         'Issueラベル・マイルストーン定義',
         'プロジェクト固有ルール',
@@ -402,6 +403,21 @@ const initialEdges = [
     type: 'smoothstep',
     label: 'runs',
     style: { stroke: '#e3b341' },
+    labelStyle: ls,
+    labelBgStyle: { fill: 'rgba(45,32,0,0.88)', rx: 4 },
+    labelBgPadding: [5, 3],
+  },
+
+  // CLI Tools → リポジトリ設定（pj init で生成）
+  {
+    id: 'cli-repocfg',
+    source: 'cli-tools',
+    sourceHandle: 'right-src',
+    target: 'repo-config',
+    targetHandle: 'bottom-tgt',
+    type: 'smoothstep',
+    label: 'pj init（PJフォルダ内で実行）',
+    style: { stroke: '#e3b341', strokeDasharray: '5 3' },
     labelStyle: ls,
     labelBgStyle: { fill: 'rgba(45,32,0,0.88)', rx: 4 },
     labelBgPadding: [5, 3],
