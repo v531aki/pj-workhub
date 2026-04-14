@@ -109,6 +109,17 @@
   border-color: #c49ffd;
 }
 
+.wh-node--local {
+  background: linear-gradient(145deg, #2d1800, #4a2c00);
+  border-color: #f0883e;
+}
+
+.wh-node--repo-project {
+  background: linear-gradient(145deg, #0d2818, #1a4530);
+  border-color: #3fb950;
+  border-style: dashed;
+}
+
 /* ===== Legacy node styles (kept for reference) ===== */
 .custom-node {
   display: flex;
